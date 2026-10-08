@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Logic - DAKPROELITE BASE</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="card">
+    <div class="card-header-flex">
+      <h3><span class="material-icons-outlined">auto_awesome</span> AI Logic & Intégrations Moteurs</h3>
+      <button class="btn-primary" onclick="saveAIConfig()">Enregistrer la Config</button>
+    </div>
+
+    <div class="form-group">
+      <label for="ai-provider">Fournisseur d'IA Actif :</label>
+      <select id="ai-provider">
+        <option value="gemini">Google Gemini AI</option>
+        <option value="openai">OpenAI GPT-4o</option>
+        <option value="claude">Anthropic Claude 3.5</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="ai-key">Clé d'API du Moteur IA :</label>
+      <div class="input-with-btn">
+        <input type="password" id="ai-key" value="sk-proj-998231029830192830192">
+        <button class="btn-secondary" onclick="toggleKeyVisibility()">Afficher</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="system-prompt">Prompt Système Global (Assistants) :</label>
+      <textarea rows="4" id="system-prompt">Vous êtes l'assistant officiel de la plateforme DAKPROELITE. Votre rôle est d'orienter les acheteurs sur la gamme de chaussures en cuir italien et d'assister la plateforme de paiement.</textarea>
+    </div>
+
+    <!-- CONSOLE DE TEST RAPIDE DU PROMPT -->
+    <div class="ai-test-box">
+      <h4><span class="material-icons-outlined">chat</span> Tester l'IA en Direct</h4>
+      <div class="form-row">
+        <input type="text" id="ai-test-input" placeholder="Posez une question de test au moteur IA...">
+        <button class="btn-secondary" onclick="runAITest()">Envoyer</button>
+      </div>
+      <div id="ai-response-box" class="ai-response-box">Attente d'un test...</div>
+    </div>
+  </div>
+
+  <script>
+    function toggleKeyVisibility() {
+      const input = document.getElementById('ai-key');
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    function saveAIConfig() {
+      const key = document.getElementById('ai-key').value;
+      const provider = document.getElementById('ai-provider').value;
+      localStorage.setItem('ai_provider', provider);
+      localStorage.setItem('ai_key', key);
+      alert('Configuration IA enregistrée avec succès !');
+    }
+
+    function runAITest() {
+      const q = document.getElementById('ai-test-input').value;
+      const box = document.getElementById('ai-response-box');
+      if (!q) return;
+
+      box.innerText = "Génération de la réponse en cours par le moteur IA...";
+      setTimeout(() => {
+        box.innerText = `[Réponse du Moteur IA] : En réponse à "${q}", le modèle configuré est pleinement opérationnel.`;
+      }, 1200);
+    }
+  </script>
+</body>
+</html>

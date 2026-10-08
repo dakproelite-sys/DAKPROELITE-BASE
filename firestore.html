@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Firestore - DAKPROELITE BASE</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="firestore-header">
+    <h3><span class="material-icons-outlined">local_fire_department</span> Cloud Firestore Studio</h3>
+    <div class="header-actions">
+      <button class="btn-secondary" onclick="exportFirestoreJSON()">Exporter JSON</button>
+    </div>
+  </div>
+
+  <div class="layout-3col">
+    <!-- COLONNE 1 : COLLECTIONS -->
+    <div class="col">
+      <div class="col-title">
+        <span>Collections</span>
+        <button class="btn-icon" onclick="addCollection()">+</button>
+      </div>
+      <div id="collections-list">
+        <div class="item active" onclick="selectCollection(this, 'products')">products</div>
+        <div class="item" onclick="selectCollection(this, 'transactions')">transactions</div>
+        <div class="item" onclick="selectCollection(this, 'orders')">orders</div>
+      </div>
+    </div>
+
+    <!-- COLONNE 2 : DOCUMENTS -->
+    <div class="col">
+      <div class="col-title">
+        <span>Documents</span>
+        <button class="btn-icon" onclick="addDocument()">+</button>
+      </div>
+      <div id="documents-list">
+        <div class="item active" onclick="selectDocument(this, 'doc_leather_shoe_01')">doc_leather_shoe_01</div>
+        <div class="item" onclick="selectDocument(this, 'doc_leather_shoe_02')">doc_leather_shoe_02</div>
+        <div class="item" onclick="selectDocument(this, 'doc_leather_shoe_03')">doc_leather_shoe_03</div>
+      </div>
+    </div>
+
+    <!-- COLONNE 3 : CHAMPS (DATA) -->
+    <div class="col">
+      <div class="col-title">
+        <span>Champs de Données</span>
+        <button class="btn-icon" onclick="addField()">+ Champ</button>
+      </div>
+      <div id="fields-container" class="fields-list">
+        <div class="field-row">
+          <span class="field-name">name:</span>
+          <span class="field-val">"Chaussure Cuir Italien Oxford"</span>
+          <span class="field-type">string</span>
+        </div>
+        <div class="field-row">
+          <span class="field-name">price_fcfa:</span>
+          <span class="field-val">45000</span>
+          <span class="field-type">number</span>
+        </div>
+        <div class="field-row">
+          <span class="field-name">in_stock:</span>
+          <span class="field-val">true</span>
+          <span class="field-type">boolean</span>
+        </div>
+        <div class="field-row">
+          <span class="field-name">category:</span>
+          <span class="field-val">"Footwear"</span>
+          <span class="field-type">string</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="base-config.js"></script>
+  <script>
+    function selectCollection(el, name) {
+      document.querySelectorAll('#collections-list .item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function selectDocument(el, id) {
+      document.querySelectorAll('#documents-list .item').forEach(i => i.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    function addCollection() {
+      const name = prompt('Nom de la nouvelle collection :');
+      if (!name) return;
+      const list = document.getElementById('collections-list');
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerText = name;
+      div.onclick = function() { selectCollection(this, name); };
+      list.appendChild(div);
+    }
+
+    function addDocument() {
+      const id = prompt('Identifiant du document (ou laisser vide pour Auto-ID) :') || 'doc_' + Math.random().toString(36).substring(2, 9);
+      const list = document.getElementById('documents-list');
+      const div = document.createElement('div');
+      div.className = 'item';
+      div.innerText = id;
+      div.onclick = function() { selectDocument(this, id); };
+      list.appendChild(div);
+    }
+
+    function addField() {
+      const key = prompt('Nom du champ :');
+      if (!key) return;
+      const val = prompt('Valeur du champ :');
+      const container = document.getElementById('fields-container');
+      const row = document.createElement('div');
+      row.className = 'field-row';
+      row.innerHTML = `
+        <span class="field-name">${key}:</span>
+        <span class="field-val">${val}</span>
+        <span class="field-type">${isNaN(val) ? 'string' : 'number'}</span>
+      `;
+      container.appendChild(row);
+    }
+
+    function exportFirestoreJSON() {
+      const data = {
+        collection: document.querySelector('#collections-list .item.active')?.innerText || 'products',
+        document: document.querySelector('#documents-list .item.active')?.innerText || 'doc_01',
+        exported_at: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `firestore_export_${Date.now()}.json`;
+      a.click();
+    }
+  </script>
+</body>
+</html>

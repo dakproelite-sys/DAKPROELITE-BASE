@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vue d'ensemble - DAKPROELITE BASE</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="header-banner">
+    <h2>Tableau de bord : <span id="project-name" class="highlight-text">-</span></h2>
+    <div class="header-actions">
+      <button class="btn-secondary" onclick="refreshMetrics()">
+        <span class="material-icons-outlined">refresh</span> Actualiser
+      </button>
+      <button class="btn-primary" onclick="exportOverviewReport()">
+        <span class="material-icons-outlined">download</span> Rapport Métriques
+      </button>
+    </div>
+  </div>
+
+  <!-- GRILLE DE STATISTIQUES EN TEMPS RÉEL -->
+  <div class="grid">
+    <div class="card">
+      <div class="card-title">État des Services</div>
+      <div class="status-online">
+        <span class="status-dot"></span> Opérationnel (100%)
+      </div>
+      <div class="card-footer-sm">Latence moyenne : <span id="latency-val">12ms</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Utilisateurs Inscrits</div>
+      <div class="card-val" id="count-users">248</div>
+      <div class="card-footer-sm text-success">+12.5% cette semaine</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Requêtes RTDB (24h)</div>
+      <div class="card-val" id="count-req">14 290</div>
+      <div class="card-footer-sm">Bande passante : 1.2 GB</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Documents Firestore</div>
+      <div class="card-val" id="count-docs">1 084</div>
+      <div class="card-footer-sm">Lectures : 45.2k | Écritures : 8.1k</div>
+    </div>
+  </div>
+
+  <!-- JOURNAL D'ACTIVITÉS ET SANTÉ DU SYSTÈME -->
+  <div class="grid-2col">
+    <div class="card">
+      <div class="card-header-flex">
+        <h3><span class="material-icons-outlined">history</span> Activités Récentes du Système</h3>
+        <span class="badge-active">Flux Direct</span>
+      </div>
+      <div class="activity-log" id="activity-log-container">
+        <div class="log-item">
+          <span class="log-time">07:42:10</span>
+          <span class="log-msg">[AUTH] Connexion réussie de <strong>usr_admin_99</strong></span>
+        </div>
+        <div class="log-item">
+          <span class="log-time">07:38:05</span>
+          <span class="log-msg">[RTDB] Écriture sur <code>/app_settings/theme</code></span>
+        </div>
+        <div class="log-item">
+          <span class="log-time">07:15:22</span>
+          <span class="log-msg">[FIRESTORE] Document créé dans <code>produits/doc_049</code></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header-flex">
+        <h3><span class="material-icons-outlined">analytics</span> Consommation du Quota</h3>
+      </div>
+      <div class="quota-item">
+        <div class="quota-label"><span>Stockage RTDB</span> <span>45 MB / 1 GB</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width: 4.5%;"></div></div>
+      </div>
+      <div class="quota-item">
+        <div class="quota-label"><span>Lectures Firestore</span> <span>45,200 / 50,000</span></div>
+        <div class="progress-bar"><div class="progress-fill warning" style="width: 90.4%;"></div></div>
+      </div>
+      <div class="quota-item">
+        <div class="quota-label"><span>Bande Passante Réseau</span> <span>1.2 GB / 10 GB</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width: 12%;"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="base-config.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const project = localStorage.getItem('active_project') || 'Dakpro-Main';
+      document.getElementById('project-name').innerText = project;
+    });
+
+    function refreshMetrics() {
+      document.getElementById('count-req').innerText = (Math.floor(Math.random() * 1000) + 14000).toLocaleString();
+      document.getElementById('latency-val').innerText = (Math.floor(Math.random() * 10) + 8) + 'ms';
+      const container = document.getElementById('activity-log-container');
+      const now = new Date().toTimeString().split(' ')[0];
+      const newLog = document.createElement('div');
+      newLog.className = 'log-item';
+      newLog.innerHTML = `<span class="log-time">${now}</span> <span class="log-msg">[METRICS] Synchronisation manuelle effectuée</span>`;
+      container.insertBefore(newLog, container.firstChild);
+    }
+
+    function exportOverviewReport() {
+      const data = {
+        project: localStorage.getItem('active_project') || 'Dakpro-Main',
+        timestamp: new Date().toISOString(),
+        metrics: {
+          users: document.getElementById('count-users').innerText,
+          rtdb_requests: document.getElementById('count-req').innerText,
+          firestore_docs: document.getElementById('count-docs').innerText
+        }
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `overview_report_${data.project}.json`;
+      a.click();
+    }
+  </script>
+</body>
+</html>

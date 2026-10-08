@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DAKPROELITE BASE - Connexion & Inscription</title>
+  <!-- SDK Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- ENTÊTE -->
+    <header>
+      <div class="brand-logo">
+        <!-- SVG Vectoriel - Logo Base de données -->
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 8 C16 8 8 13 8 18 C8 23 16 28 32 28 C48 28 56 23 56 18 C56 13 48 8 32 8 Z" opacity="0.95"/>
+          <path d="M8 18 V32 C8 37 16 42 32 42 C48 42 56 37 56 32 V18" stroke-width="3" fill="none"/>
+          <path d="M8 32 V46 C8 51 16 56 32 56 C48 56 56 51 56 46 V32" stroke-width="3" fill="none"/>
+          <circle cx="46" cy="32" r="3"/>
+          <circle cx="46" cy="46" r="3"/>
+        </svg>
+        <div class="brand-text">
+          <h1>DAKPROELITE <span>BASE</span></h1>
+          <p>Console Développeur - Authentification</p>
+        </div>
+      </div>
+      
+      <div id="user-badge" class="hidden">
+        <button onclick="logoutDev()" class="btn-logout">Déconnexion</button>
+      </div>
+    </header>
+
+    <!-- SECTION AUTHENTIFICATION (INSCRIPTION & CONNEXION) -->
+    <div id="auth-section">
+      
+      <div class="card hero-banner">
+        <h2>Platform Backend-as-a-Service pour Développeurs</h2>
+        <p>Inscrivez-vous ou connectez-vous sur <strong>DAKPROELITE BASE</strong>. L'authentification s'appuie directement sur Supabase (<code>auth.users</code>) pour sécuriser vos projets et vos clés API.</p>
+      </div>
+
+      <div class="card">
+        <h3>Espace Authentification</h3>
+        
+        <label>Adresse Email Développeur</label>
+        <input type="email" id="email" placeholder="dev@dakproelite.com">
+        
+        <label>Mot de passe (minimum 6 caractères)</label>
+        <input type="password" id="password" placeholder="••••••••••••">
+        
+        <button onclick="loginDev()" class="btn-primary">Se Connecter</button>
+        <button onclick="registerDev()" class="btn-secondary">Créer un Compte Développeur</button>
+        
+        <div id="auth-status" class="status-msg"></div>
+      </div>
+    </div>
+
+    <!-- TABLEAU DE BORD DÉVELOPPEUR (Visible après connexion) -->
+    <div id="dashboard-section" class="hidden">
+      
+      <div class="card">
+        <p>Développeur connecté : <strong id="user-email"></strong></p>
+      </div>
+
+      <div class="grid-2">
+        <!-- Créer une application -->
+        <div class="card">
+          <h3>Enregistrer une Application</h3>
+          <label>Nom de votre projet / App</label>
+          <input type="text" id="app-name" placeholder="Ex: Dashboard Pay, Client App v1...">
+          <button onclick="createApp()" class="btn-primary">Générer Clé API</button>
+        </div>
+
+        <!-- Liste des applications & clés -->
+        <div class="card">
+          <h3>Vos Clés API Générées</h3>
+          <div id="apps-list">Chargement des données...</div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Configuration Supabase
+    const SUPABASE_URL = 'https://pqagmlvbeiulztdtpnrt.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable__m-IFasS5kWyvTDGhMpj8g_V01PfEcQ';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Page de redirection après action
+    const PAGE_LOGIN = 'login.html';
+
+    // Vérification de session active au démarrage
+    window.onload = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        showDashboard(session.user);
+      }
+    };
+
+    // Validation des champs Email et Mot de passe
+    function validateInputs(email, password) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      
+      if (!email || email.length < 6 || !emailRegex.test(email)) {
+        showAuthError("Veuillez entrer une adresse email valide d'au moins 6 caractères.");
+        return false;
+      }
+      
+      if (!password || password.length < 6) {
+        showAuthError("Le mot de passe doit contenir au moins 6 caractères.");
+        return false;
+      }
+      
+      return true;
+    }
+
+    // 1. INSCRIPTION (Utilise Supabase auth.users)
+    async function registerDev() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      
+      if (!validateInputs(email, password)) return;
+
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      
+      if (error) {
+        showAuthError("Échec de l'inscription : " + error.message);
+      } else {
+        showAuthSuccess("Inscription réussie ! Redirection...");
+        setTimeout(() => {
+          window.location.href = PAGE_LOGIN;
+        }, 1500);
+      }
+    }
+
+    // 2. CONNEXION (Utilise Supabase auth.users)
+    async function loginDev() {
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      
+      if (!validateInputs(email, password)) return;
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      if (error) {
+        showAuthError("Échec de connexion : " + error.message);
+      } else {
+        showAuthSuccess("Connexion réussie ! Redirection...");
+        setTimeout(() => {
+          window.location.href = PAGE_LOGIN;
+        }, 1000);
+      }
+    }
+
+    // 3. DÉCONNEXION
+    async function logoutDev() {
+      await supabase.auth.signOut();
+      document.getElementById('auth-section').classList.remove('hidden');
+      document.getElementById('dashboard-section').classList.add('hidden');
+      document.getElementById('user-badge').classList.add('hidden');
+      window.location.href = PAGE_LOGIN;
+    }
+
+    function showDashboard(user) {
+      document.getElementById('auth-section').classList.add('hidden');
+      document.getElementById('dashboard-section').classList.remove('hidden');
+      document.getElementById('user-badge').classList.remove('hidden');
+      document.getElementById('user-email').innerText = user.email;
+      loadDeveloperApps(user.id);
+    }
+
+    function showAuthError(msg) {
+      const status = document.getElementById('auth-status');
+      status.className = 'status-msg';
+      status.innerText = msg;
+    }
+
+    function showAuthSuccess(msg) {
+      const status = document.getElementById('auth-status');
+      status.className = 'status-msg status-success';
+      status.innerText = msg;
+    }
+
+    // 4. CRÉATION D'APPLICATION & CLÉ API
+    async function createApp() {
+      const appName = document.getElementById('app-name').value.trim();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!appName) return alert("Veuillez inscrire le nom du projet.");
+
+      const { data, error } = await supabase
+        .from('developer_apps')
+        .insert([{ developer_id: user.id, app_name: appName }]);
+
+      if (error) {
+        alert("Erreur de création : " + error.message);
+      } else {
+        document.getElementById('app-name').value = '';
+        loadDeveloperApps(user.id);
+      }
+    }
+
+    // 5. CHARGEMENT DES APPS PAR UTILISATEUR
+    async function loadDeveloperApps(developerId) {
+      const { data, error } = await supabase
+        .from('developer_apps')
+        .select('*')
+        .eq('developer_id', developerId)
+        .order('created_at', { ascending: false });
+
+      const container = document.getElementById('apps-list');
+      if (error) return container.innerHTML = "<p>Erreur de chargement des applications.</p>";
+
+      if (data.length === 0) {
+        return container.innerHTML = "<p>Aucune application ni clé générée pour le moment.</p>";
+      }
+
+      container.innerHTML = data.map(app => `
+        <div class="app-item">
+          <div class="app-title">📱 ${app.app_name}</div>
+          <div class="api-key-box">${app.api_key}</div>
+        </div>
+      `).join('');
+    }
+  </script>
+
+</body>
+</html>

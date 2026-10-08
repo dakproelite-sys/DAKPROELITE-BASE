@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Realtime Database - DAKPROELITE BASE</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="card">
+    <div class="card-header-flex">
+      <h3><span class="material-icons-outlined">storage</span> Explorer Realtime Database</h3>
+      <div class="header-actions">
+        <button class="btn-secondary" onclick="exportRTDBData()">
+          <span class="material-icons-outlined">file_download</span> Exporter JSON
+        </button>
+        <button class="btn-secondary" onclick="clearTree()">
+          <span class="material-icons-outlined">delete_sweep</span> Vider
+        </button>
+      </div>
+    </div>
+
+    <!-- FORMULAIRE ÉCRITURE COMPLÈTEMENT DYNAMIQUE -->
+    <div class="form-row-grid">
+      <input type="text" id="node-path" placeholder="Chemin (ex: /app_settings/theme)">
+      <input type="text" id="node-val" placeholder='Valeur JSON (ex: "dark" ou {"active": true})'>
+      <button class="btn-primary" onclick="writeNode()">Écrire le nœud</button>
+    </div>
+
+    <!-- RECHERCHE DE CLEF -->
+    <div class="search-bar-inline">
+      <span class="material-icons-outlined">search</span>
+      <input type="text" id="rtdb-search" onkeyup="filterNodes()" placeholder="Filtrer l'arborescence par clé ou valeur...">
+    </div>
+
+    <!-- ARBORESCENCE INTERACTIVE TEMPS RÉEL -->
+    <div class="rtdb-tree-wrapper" id="tree-container">
+      <div class="tree-root">
+        <span class="key">"https://dakpro-base-default-rtdb.firebaseio.com/"</span>
+      </div>
+      
+      <div class="node-group" data-key="users">
+        <div class="node">
+          <span class="key">"users":</span> {
+          <button class="btn-xs-danger" onclick="deleteNode(this)">supprimer</button>
+        </div>
+        <div class="node-children">
+          <div class="node" data-key="usr_01">
+            <span class="key">"usr_01":</span> <span class="val">{"name": "Admin", "role": "developer"}</span>
+          </div>
+          <div class="node" data-key="usr_02">
+            <span class="key">"usr_02":</span> <span class="val">{"name": "Acheteur Client", "role": "buyer"}</span>
+          </div>
+        </div>
+        <div class="node">}</div>
+      </div>
+
+      <div class="node-group" data-key="system">
+        <div class="node">
+          <span class="key">"system":</span> {
+          <button class="btn-xs-danger" onclick="deleteNode(this)">supprimer</button>
+        </div>
+        <div class="node-children">
+          <div class="node" data-key="status">
+            <span class="key">"status":</span> <span class="val">"online"</span>
+          </div>
+          <div class="node" data-key="version">
+            <span class="key">"version":</span> <span class="val">"2.0.4"</span>
+          </div>
+        </div>
+        <div class="node">}</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="base-config.js"></script>
+  <script>
+    function writeNode() {
+      const path = document.getElementById('node-path').value.trim();
+      const val = document.getElementById('node-val').value.trim();
+
+      if (!path) {
+        alert('Veuillez spécifier un chemin (ex: /system/version)');
+        return;
+      }
+
+      const container = document.getElementById('tree-container');
+      const newDiv = document.createElement('div');
+      newDiv.className = 'node-group';
+      newDiv.setAttribute('data-key', path);
+      newDiv.innerHTML = `
+        <div class="node">
+          <span class="key">"${path}":</span> <span class="val">${val || 'null'}</span>
+          <button class="btn-xs-danger" onclick="deleteNode(this)">supprimer</button>
+        </div>
+      `;
+      container.appendChild(newDiv);
+
+      document.getElementById('node-path').value = '';
+      document.getElementById('node-val').value = '';
+    }
+
+    function deleteNode(btn) {
+      if (confirm('Voulez-vous vraiment supprimer ce nœud de la base ?')) {
+        const group = btn.closest('.node-group') || btn.closest('.node');
+        group.remove();
+      }
+    }
+
+    function clearTree() {
+      if (confirm('Vider l\'ensemble de l\'arborescence locale ?')) {
+        const container = document.getElementById('tree-container');
+        container.innerHTML = '<div class="tree-root"><span class="key">"https://dakpro-base-default-rtdb.firebaseio.com/"</span></div>';
+      }
+    }
+
+    function filterNodes() {
+      const query = document.getElementById('rtdb-search').value.toLowerCase();
+      const nodes = document.querySelectorAll('.node-group, .node');
+
+      nodes.forEach(node => {
+        const text = node.innerText.toLowerCase();
+        node.style.display = text.includes(query) ? 'block' : 'none';
+      });
+    }
+
+    function exportRTDBData() {
+      const data = {
+        database: "dakpro-base-default-rtdb",
+        exported_at: new Date().toISOString(),
+        content: document.getElementById('tree-container').innerText
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `rtdb_backup_${Date.now()}.json`;
+      a.click();
+    }
+  </script>
+</body>
+</html>

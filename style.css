@@ -1,0 +1,346 @@
+/* ==========================================================================
+   DAKPROELITE BASE - SYSTEME DE DESIGN PREMIUM MULTI-THÈME
+   Couleurs : Or Brillant, Bleu Nuit / Cyan, Rouge Brillant (Accents), Noir Profond & Blanc Éclatant
+   ========================================================================== */
+
+/* 1. VARIABLES GLOBALES (PALETTE & THÈMES) */
+:root {
+  /* Palette de couleurs principales */
+  --gold-primary: #f59e0b;
+  --gold-glow: #fbbf24;
+  --gold-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  --gold-shiny-gradient: linear-gradient(135deg, #fffbeb 0%, #f59e0b 50%, #b45309 100%);
+
+  --blue-bright: #3b82f6;
+  --blue-cyan: #06b6d4;
+  --blue-gradient: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+
+  --red-accent: #ef4444;
+  --red-glow: rgba(239, 68, 68, 0.4);
+
+  /* Thème Sombre (Par Défaut) */
+  --bg-main: #0a0e17;
+  --bg-card: #131b2e;
+  --bg-card-hover: #1c2742;
+  --bg-sidebar: #070a12;
+  --bg-input: #0a0e17;
+  
+  --border-color: rgba(245, 158, 11, 0.25);
+  --border-color-strong: rgba(245, 158, 11, 0.6);
+
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  --text-gold: #fbbf24;
+
+  --shadow-gold: 0 4px 20px rgba(245, 158, 11, 0.15);
+  --shadow-blue: 0 4px 20px rgba(59, 130, 246, 0.15);
+  --glass-effect: rgba(19, 27, 46, 0.8);
+}
+
+/* THÈME CLAIR (Mode Lumineux / Light Mode) */
+[data-theme="light"] {
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --bg-sidebar: #0f172a; /* Garde une élégance sombre pour la sidebar */
+  --bg-input: #f1f5f9;
+
+  --border-color: rgba(217, 119, 6, 0.3);
+  --border-color-strong: rgba(217, 119, 6, 0.8);
+
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-gold: #d97706;
+
+  --shadow-gold: 0 4px 20px rgba(217, 119, 6, 0.12);
+  --shadow-blue: 0 4px 20px rgba(37, 99, 235, 0.12);
+  --glass-effect: rgba(255, 255, 255, 0.9);
+}
+
+/* 2. REINITIALISATION & BASE */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* 3. EN-TÊTES & TEXTES EN OR & ROUGE BRILLANT */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-main);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.highlight-text, .text-gold, .brand-title span {
+  background: var(--gold-shiny-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 800;
+  text-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Red Accent (Modéré et brillant) */
+.highlight-red, .card-val, .rtdb-key, .field-name {
+  color: var(--red-accent);
+  text-shadow: 0 0 10px var(--red-glow);
+  font-weight: 700;
+}
+
+.description-text, .card-footer-sm, .text-muted {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* 4. DESIGN DES CARTES & PANNEAUX (GLASSMORPHISM) */
+.card, .stat-box, .model-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-gold);
+  position: relative;
+  overflow: hidden;
+}
+
+.card:hover, .stat-box:hover {
+  border-color: var(--border-color-strong);
+  box-shadow: 0 6px 25px rgba(245, 158, 11, 0.25);
+  transform: translateY(-2px);
+}
+
+.card-header-flex, .card-title-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* 5. BOUTONS LUXUEUX ET ROBUSTES */
+button {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  padding: 10px 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Bouton Principal - Or Brillant */
+.btn-primary {
+  background: var(--gold-gradient);
+  color: #000;
+  font-weight: 800;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.6);
+  transform: translateY(-1px);
+}
+
+/* Bouton Secondaire - Bleu Nuit & Cyan */
+.btn-secondary {
+  background: var(--blue-gradient);
+  color: #ffffff;
+  box-shadow: var(--shadow-blue);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+  box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Bouton Danger / Action Spéciale Rouge */
+.btn-danger, .btn-xs-danger {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.btn-danger:hover {
+  background: #ef4444;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+}
+
+/* Petits boutons inline */
+.btn-sm, .btn-xs { padding: 6px 12px; font-size: 11px; }
+
+/* 6. FORMULAIRES, INPUTS & SELECTS */
+input, select, textarea {
+  width: 100%;
+  padding: 11px 14px;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  border-radius: 8px;
+  margin-top: 6px;
+  font-family: inherit;
+  font-size: 14px;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--gold-glow);
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+}
+
+/* 7. BARRE LATERALE (SIDEBAR) & NAVIGATION */
+aside#sidebar {
+  width: 260px;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border-color);
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.sidebar-header {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.brand-title {
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+}
+
+.nav-item {
+  padding: 12px 20px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  border-left: 3px solid transparent;
+}
+
+.nav-item:hover, .nav-item.active {
+  color: var(--text-main);
+  background: rgba(245, 158, 11, 0.08);
+  border-left-color: var(--gold-primary);
+}
+
+.nav-item.active .material-icons-outlined {
+  color: var(--gold-glow);
+}
+
+/* 8. COMMUTATEUR DE THÈME (DARK / LIGHT TOGGLE BUTTON) */
+.theme-switch-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-top: 1px solid var(--border-color);
+}
+
+.theme-switch-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--gold-glow);
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.theme-switch-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--gold-glow);
+}
+
+/* 9. TABLEAUX & GRILLES */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+.grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.layout-3col { display: grid; grid-template-columns: 220px 260px 1fr; gap: 15px; height: 75vh; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--bg-card);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 14px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 13px;
+}
+
+th {
+  background: rgba(245, 158, 11, 0.05);
+  color: var(--text-gold);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+/* 10. BADGES, ARBORESCENCE & SIMULATEUR */
+.status-online { color: #10b981; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.status-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 10px #10b981; }
+
+.badge-active { background: #10b981; color: #000; font-weight: bold; padding: 3px 8px; border-radius: 4px; font-size: 10px; }
+.role-tag { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+.role-tag.admin { background: var(--red-accent); color: #fff; }
+.role-tag.buyer { background: var(--blue-bright); color: #fff; }
+
+.rtdb-tree-wrapper {
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  border-radius: 8px;
+  font-family: monospace;
+}
+
+/* INTEGRATION MAIN LAYOUT */
+main {
+  margin-left: 260px;
+  min-height: 100vh;
+}
+
+header {
+  height: 65px;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 25px;
+}

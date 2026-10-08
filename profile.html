@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration Profil & Contrôle Total - DAKPROELITE BASE</title>
+  
+  <!-- Icônes Google Material -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  
+  <!-- Feuille de style globale (Tous les styles CSS proviennent de style.css) -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- BARRE DE NAVIGATION INTERNE PAR ONGLETS (Compatible Mobile Android / Tablette / PC) -->
+  <nav class="sub-nav-tabs">
+    <button class="tab-btn active" onclick="switchAdminTab('tab-overview', this)">
+      <span class="material-icons-outlined">dashboard</span>
+      <span>Vue Générale & Quotas</span>
+    </button>
+    <button class="tab-btn" onclick="switchAdminTab('tab-users', this)">
+      <span class="material-icons-outlined">manage_accounts</span>
+      <span>Contrôle Développeurs</span>
+    </button>
+    <button class="tab-btn" onclick="switchAdminTab('tab-cdn', this)">
+      <span class="material-icons-outlined">collections</span>
+      <span>Logos & Stockage CDN</span>
+    </button>
+    <button class="tab-btn" onclick="switchAdminTab('tab-security', this)">
+      <span class="material-icons-outlined">admin_panel_settings</span>
+      <span>Sécurité & Clés Générales</span>
+    </button>
+  </nav>
+
+  <!-- ONGLET 1 : VUE GÉNÉRALE & QUOTAS GLOBAUX -->
+  <section id="tab-overview" class="admin-tab-content active">
+    <div class="grid-2col">
+      
+      <!-- Carte Profil Super Admin -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="material-icons-outlined">verified_user</span> Profil Administrateur Principal
+          </div>
+          <span class="status-badge status-active">SUPER ADMIN</span>
+        </div>
+        <div class="card-body">
+          <p><strong>Nom :</strong> Administrateur DAKPROELITE</p>
+          <p><strong>Email :</strong> admin@dakproelite.com</p>
+          <p><strong>Identifiant Unique :</strong> <code class="highlight-code">ADM-88301-BENIN</code></p>
+          <p><strong>Niveau de Privilège :</strong> Contrôle Total (Accès Root)</p>
+        </div>
+      </div>
+
+      <!-- Carte Consommation Globale du Serveur -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="material-icons-outlined">speed</span> Consommation Serveur Globale
+          </div>
+          <span class="badge-info">Mois en cours</span>
+        </div>
+        <div class="card-body">
+          <div class="quota-block">
+            <div class="metric-row">
+              <span>Stockage CDN (Logos & Assets)</span>
+              <strong>1.45 GB / 5.0 GB</strong>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar" style="width: 29%;"></div>
+            </div>
+          </div>
+
+          <div class="quota-block">
+            <div class="metric-row">
+              <span>Requêtes Realtime DB (Toutes Apps)</span>
+              <strong>34,120 / 100,000 reqs</strong>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar" style="width: 34%;"></div>
+            </div>
+          </div>
+
+          <div class="quota-block">
+            <div class="metric-row">
+              <span>Comptes Développeurs Inscrits</span>
+              <strong class="text-danger">88 / 100 Comptes</strong>
+            </div>
+            <div class="progress-container">
+              <div class="progress-bar warning" style="width: 88%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ONGLET 2 : CONTRÔLE TOTAL DES DÉVELOPPEURS & INSCRIPTIONS -->
+  <section id="tab-users" class="admin-tab-content">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="material-icons-outlined">group_config</span> Gestion et Modération des Développeurs
+        </div>
+        <div class="search-box-sm">
+          <input type="text" placeholder="Rechercher un développeur..." class="form-input-sm" onkeyup="filterUsers(this.value)">
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Développeur / Email</th>
+              <th>Projet Assigné</th>
+              <th>Consommation Mensuelle</th>
+              <th>Statut Compte</th>
+              <th>Actions de Contrôle Admin</th>
+            </tr>
+          </thead>
+          <tbody id="user-table-body">
+            <tr>
+              <td>
+                <strong>Client Kossi</strong><br>
+                <small class="text-muted">kossi@gmail.com</small>
+              </td>
+              <td>DAKPRO PAY</td>
+              <td>12,450 / 50,000 reqs (24%)</td>
+              <td><span class="status-badge status-active">Actif</span></td>
+              <td>
+                <button class="btn-secondary btn-sm" onclick="viewDeveloperDetails('Client Kossi')">Projets</button>
+                <button class="btn-warning btn-sm" onclick="editUserQuota('Client Kossi')">Ajuster Quota</button>
+                <button class="btn-danger btn-sm" onclick="toggleBlockUser(this, 'Client Kossi')">Suspendre</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>Boutique Elite</strong><br>
+                <small class="text-muted">contact@elite-shop.bj</small>
+              </td>
+              <td>DAKPRO E-COMMERCE</td>
+              <td>49,890 / 50,000 reqs (99%)</td>
+              <td><span class="status-badge status-exceeded">Quota Proche</span></td>
+              <td>
+                <button class="btn-secondary btn-sm" onclick="viewDeveloperDetails('Boutique Elite')">Projets</button>
+                <button class="btn-warning btn-sm" onclick="editUserQuota('Boutique Elite')">Ajuster Quota</button>
+                <button class="btn-danger btn-sm" onclick="toggleBlockUser(this, 'Boutique Elite')">Bloquer Clé</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ONGLET 3 : GESTIONNAIRE DE LOGOS & BANQUE D'URLS CDN -->
+  <section id="tab-cdn" class="admin-tab-content">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="material-icons-outlined">cloud_sync</span> Stockage d'Assets & Générateur d'URLs CDN
+        </div>
+        <button class="btn-primary btn-sm" onclick="document.getElementById('logo-upload-input').click()">
+          <span class="material-icons-outlined">upload</span> Charger un Logo / Fichier
+        </button>
+        <input type="file" id="logo-upload-input" class="hidden-input" onchange="handleLogoUpload(event)">
+      </div>
+
+      <p class="description-text">
+        Téléversez ici vos logos et images de marque. Vous pouvez copier directement l'URL générée pour l'utiliser dans toutes vos applications web.
+      </p>
+
+      <div class="upload-dropzone" onclick="document.getElementById('logo-upload-input').click()">
+        <span class="material-icons-outlined icon-large">cloud_upload</span>
+        <p>Cliquez ou glissez-déposez votre fichier image (PNG, SVG, JPG) ici</p>
+      </div>
+
+      <div class="asset-list-container" id="logo-assets-list">
+        <div class="asset-card">
+          <div class="asset-info">
+            <span class="material-icons-outlined icon-gold">image</span>
+            <strong>Logo_DAKPRO_Gold.png</strong>
+          </div>
+          <input type="text" class="form-input-readonly" value="https://storage.dakproelite.com/assets/logo-gold.png" readonly>
+          <button class="btn-secondary btn-sm" onclick="copyUrl('https://storage.dakproelite.com/assets/logo-gold.png')">Copier URL</button>
+        </div>
+
+        <div class="asset-card">
+          <div class="asset-info">
+            <span class="material-icons-outlined icon-blue">image</span>
+            <strong>Logo_DAKPRO_Pay_Dark.svg</strong>
+          </div>
+          <input type="text" class="form-input-readonly" value="https://storage.dakproelite.com/assets/logo-pay-dark.svg" readonly>
+          <button class="btn-secondary btn-sm" onclick="copyUrl('https://storage.dakproelite.com/assets/logo-pay-dark.svg')">Copier URL</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ONGLET 4 : SÉCURITÉ GLOBALE & RÈGLES SERVEUR -->
+  <section id="tab-security" class="admin-tab-content">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="material-icons-outlined">security</span> Master Keys & Verrouillage Plateforme
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label>Master Clé API Administrateur (Bypass tous les quotas) :</label>
+          <div class="input-with-button">
+            <input type="password" value="dakpro_master_sec_key_9900881122" id="master-key-input" class="form-input" readonly>
+            <button class="btn-secondary btn-sm" onclick="toggleSecretVisibility('master-key-input')">Afficher</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Règle de limitation par défaut pour les nouveaux développeurs :</label>
+          <select class="form-select">
+            <option value="50000">Spark Gratuit (50,000 requêtes / mois)</option>
+            <option value="100000">Pro Standard (100,000 requêtes / mois)</option>
+            <option value="unlimited">Accès Illimité (Développeurs VIP)</option>
+          </select>
+        </div>
+
+        <div class="action-footer">
+          <button class="btn-danger" onclick="emergencyLockdown()">
+            <span class="material-icons-outlined">lock</span> Verrouillage d'urgence (Couper toutes les API)
+          </button>
+          <button class="btn-primary" onclick="alert('Paramètres globaux sauvegardés.')">Enregistrer les règles</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGIQUE JAVASCRIPT DU MODULE PROFIL ADMIN -->
+  <script>
+    // Navigation entre les onglets
+    function switchAdminTab(tabId, element) {
+      document.querySelectorAll('.admin-tab-content').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      document.getElementById(tabId).classList.add('active');
+      if (element) {
+        element.classList.add('active');
+      }
+    }
+
+    // Copie de l'URL CDN dans le presse-papier
+    function copyUrl(url) {
+      navigator.clipboard.writeText(url);
+      alert('URL copiée avec succès dans le presse-papier :\n' + url);
+    }
+
+    // Gestion du téléversement de logo
+    function handleLogoUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const generatedUrl = "https://storage.dakproelite.com/assets/" + file.name.replace(/\s+/g, '-').toLowerCase();
+        const list = document.getElementById('logo-assets-list');
+        const newItem = document.createElement('div');
+        newItem.className = 'asset-card';
+        newItem.innerHTML = `
+          <div class="asset-info">
+            <span class="material-icons-outlined icon-green">image</span>
+            <strong>${file.name}</strong>
+          </div>
+          <input type="text" class="form-input-readonly" value="${generatedUrl}" readonly>
+          <button class="btn-secondary btn-sm" onclick="copyUrl('${generatedUrl}')">Copier URL</button>
+        `;
+        list.prepend(newItem);
+        alert('Nouveau logo téléversé. URL CDN générée avec succès !');
+      }
+    }
+
+    // Suspendre ou Réactiver un développeur
+    function toggleBlockUser(button, username) {
+      if (button.innerText === 'Suspendre' || button.innerText === 'Bloquer Clé') {
+        if (confirm(`Confirmer la suspension du compte développeur de "${username}" ?`)) {
+          button.innerText = 'Réactiver';
+          button.className = 'btn-success btn-sm';
+          alert(`Le compte de ${username} a été verrouillé. Ses requêtes API sont désormais bloquées.`);
+        }
+      } else {
+        button.innerText = 'Suspendre';
+        button.className = 'btn-danger btn-sm';
+        alert(`Le compte de ${username} a été réactivé.`);
+      }
+    }
+
+    // Ajuster le quota d'un développeur
+    function editUserQuota(username) {
+      const newQuota = prompt(`Définir le nouveau quota mensuel de requêtes pour ${username} :`, "100000");
+      if (newQuota !== null && newQuota !== "") {
+        alert(`Nouveau quota de ${newQuota} requêtes/mois appliqué à ${username}.`);
+      }
+    }
+
+    // Voir les détails des projets
+    function viewDeveloperDetails(username) {
+      alert(`Chargement de la fiche complète et de l'historique des projets de ${username}...`);
+    }
+
+    // Filtrer les utilisateurs dans le tableau
+    function filterUsers(query) {
+      const rows = document.querySelectorAll('#user-table-body tr');
+      rows.forEach(row => {
+        const text = row.innerText.toLowerCase();
+        row.style.display = text.includes(query.toLowerCase()) ? '' : 'none';
+      });
+    }
+
+    // Afficher / Masquer la master key
+    function toggleSecretVisibility(inputId) {
+      const input = document.getElementById(inputId);
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+
+    // Verrouillage d'urgence
+    function emergencyLockdown() {
+      if (confirm("ATTENTION : Souhaitez-vous activer le verrouillage d'urgence ? Cela coupera temporairement l'accès à toutes les API développeurs.")) {
+        alert("Mode Urgence Activé. Seul le compte Super Admin reste opérationnel.");
+      }
+    }
+  </script>
+
+</body>
+</html>

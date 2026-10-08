@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authentication - DAKPROELITE BASE</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="card">
+    <div class="card-header-flex">
+      <h3><span class="material-icons-outlined">people</span> Gestion des Utilisateurs & Sessions</h3>
+      <div class="header-actions">
+        <button class="btn-primary" onclick="openCreateUserModal()">+ Nouvel Utilisateur</button>
+        <button class="btn-secondary" onclick="exportUsersCSV()">Exporter CSV</button>
+      </div>
+    </div>
+
+    <!-- RECHERCHE & RECHERCHE DE FILTRES -->
+    <div class="search-bar-inline">
+      <span class="material-icons-outlined">search</span>
+      <input type="text" id="user-search" onkeyup="filterUsers()" placeholder="Rechercher par UID, Email ou Rôle...">
+    </div>
+
+    <div class="table-wrapper">
+      <table id="users-table">
+        <thead>
+          <tr>
+            <th>UID</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Date Inscription</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="users-tbody">
+          <tr>
+            <td><code>usr_998231a</code></td>
+            <td>dev@dakproelite.com</td>
+            <td><span class="role-tag admin">Super Admin</span></td>
+            <td>2026-09-01</td>
+            <td><span class="badge-active">ACTIF</span></td>
+            <td>
+              <button class="btn-xs" onclick="resetUserPassword('dev@dakproelite.com')">Reset Pass</button>
+              <button class="btn-xs-danger" onclick="deleteUser(this)">Bannir</button>
+            </td>
+          </tr>
+          <tr>
+            <td><code>usr_443120b</code></td>
+            <td>client.buyer@gmail.com</td>
+            <td><span class="role-tag buyer">Acheteur</span></td>
+            <td>2026-10-02</td>
+            <td><span class="badge-active">ACTIF</span></td>
+            <td>
+              <button class="btn-xs" onclick="resetUserPassword('client.buyer@gmail.com')">Reset Pass</button>
+              <button class="btn-xs-danger" onclick="deleteUser(this)">Bannir</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="base-config.js"></script>
+  <script>
+    function openCreateUserModal() {
+      const email = prompt('Adresse Email de l\'utilisateur :');
+      if (!email) return;
+      const role = prompt('Rôle (Super Admin, Acheteur, Développeur) :', 'Acheteur');
+      
+      const tbody = document.getElementById('users-tbody');
+      const tr = document.createElement('tr');
+      const uid = 'usr_' + Math.random().toString(36).substring(2, 9);
+      const today = new Date().toISOString().split('T')[0];
+
+      tr.innerHTML = `
+        <td><code>${uid}</code></td>
+        <td>${email}</td>
+        <td><span class="role-tag buyer">${role}</span></td>
+        <td>${today}</td>
+        <td><span class="badge-active">ACTIF</span></td>
+        <td>
+          <button class="btn-xs" onclick="resetUserPassword('${email}')">Reset Pass</button>
+          <button class="btn-xs-danger" onclick="deleteUser(this)">Bannir</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    function resetUserPassword(email) {
+      alert('Un email de réinitialisation de mot de passe a été envoyé à : ' + email);
+    }
+
+    function deleteUser(btn) {
+      if (confirm('Voulez-vous révoquer et bannir cet utilisateur ?')) {
+        btn.closest('tr').remove();
+      }
+    }
+
+    function filterUsers() {
+      const query = document.getElementById('user-search').value.toLowerCase();
+      const rows = document.querySelectorAll('#users-tbody tr');
+      rows.forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(query) ? '' : 'none';
+      });
+    }
+
+    function exportUsersCSV() {
+      let csv = 'UID,Email,Role,Date,Statut\n';
+      document.querySelectorAll('#users-tbody tr').forEach(row => {
+        const cols = row.querySelectorAll('td');
+        if (cols.length > 0) {
+          csv += `${cols[0].innerText},${cols[1].innerText},${cols[2].innerText},${cols[3].innerText},${cols[4].innerText}\n`;
+        }
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `users_export_${Date.now()}.csv`;
+      a.click();
+    }
+  </script>
+</body>
+</html>

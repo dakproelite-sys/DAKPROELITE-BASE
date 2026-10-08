@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Paramètres & Projets - DAKPROELITE BASE</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- CRÉATION / SÉLECTION MULTI-PROJETS -->
+  <div class="card">
+    <div class="card-header-flex">
+      <h3><span class="material-icons-outlined">folder</span> Gestion Multi-Projets</h3>
+      <button class="btn-primary" onclick="showNewProjectPrompt()">+ Nouveau Projet</button>
+    </div>
+
+    <label for="project-selector">Projet Actif :</label>
+    <select id="project-selector" onchange="changeProject(this.value)"></select>
+
+    <div class="project-info-box">
+      <div class="info-row">
+        <span>Clé d'API du Projet :</span>
+        <code id="project-api-key">dk_live_99201923840192840</code>
+        <button class="btn-sm-inline" onclick="copyProjectKey()">Copier</button>
+      </div>
+      <div class="info-row">
+        <span>Identifiant Unique (ID) :</span>
+        <code id="project-id-val">dakpro-main-prod-01</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- RÈGLES DE SÉCURITÉ (RLS) ET SIMULATEUR -->
+  <div class="card">
+    <div class="card-header-flex">
+      <h3><span class="material-icons-outlined">shield</span> Éditeur de Règles RLS (Security Rules)</h3>
+      <div class="header-actions">
+        <button class="btn-secondary" onclick="resetDefaultRLS()">Réinitialiser</button>
+        <button class="btn-primary" onclick="saveRLSRules()">Enregistrer les Règles</button>
+      </div>
+    </div>
+
+    <p class="description-text">Définissez les droits d'accès en lecture et écriture pour la base de données active.</p>
+    <textarea rows="10" id="rls-rules" class="code-editor"></textarea>
+
+    <!-- SIMULATEUR RLS -->
+    <div class="simulator-box">
+      <h4><span class="material-icons-outlined">science</span> Simulateur d'Accès RLS</h4>
+      <div class="form-row">
+        <select id="sim-role">
+          <option value="authenticated">Utilisateur Authentifié</option>
+          <option value="admin">Administrateur</option>
+          <option value="anonymous">Utilisateur Anonyme</option>
+        </select>
+        <select id="sim-action">
+          <option value="read">READ (Lecture)</option>
+          <option value="write">WRITE (Écriture)</option>
+        </select>
+        <button class="btn-secondary" onclick="testRLS()">Tester l'accès</button>
+      </div>
+      <div id="sim-result" class="sim-result-tag">Prêt à tester</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="base-config.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      loadProjectsList();
+      loadStoredRLS();
+    });
+
+    function loadProjectsList() {
+      const projects = JSON.parse(localStorage.getItem('dakpro_projects')) || defaultProjects;
+      const select = document.getElementById('project-selector');
+      select.innerHTML = '';
+      
+      projects.forEach(p => {
+        const opt = document.createElement('option');
+        opt.value = p.name;
+        opt.innerText = p.name;
+        select.appendChild(opt);
+      });
+
+      const active = localStorage.getItem('active_project') || projects[0].name;
+      select.value = active;
+      updateProjectDetails(active, projects);
+    }
+
+    function changeProject(val) {
+      localStorage.setItem('active_project', val);
+      const projects = JSON.parse(localStorage.getItem('dakpro_projects')) || defaultProjects;
+      updateProjectDetails(val, projects);
+      alert('Projet activé : ' + val);
+      if (window.parent && window.parent.location !== window.location) {
+        window.parent.location.reload();
+      }
+    }
+
+    function updateProjectDetails(name, projects) {
+      const current = projects.find(p => p.name === name) || projects[0];
+      document.getElementById('project-api-key').innerText = current.key || 'dk_live_' + Math.random().toString(36).substring(2, 10);
+      document.getElementById('project-id-val').innerText = name.toLowerCase().replace(/\s+/g, '-') + '-id';
+    }
+
+    function showNewProjectPrompt() {
+      const name = prompt('Nom du nouveau projet :');
+      if (!name) return;
+      const projects = JSON.parse(localStorage.getItem('dakpro_projects')) || defaultProjects;
+      const newKey = 'dk_live_' + Math.random().toString(36).substring(2, 12);
+      projects.push({ name: name, key: newKey });
+      localStorage.setItem('dakpro_projects', JSON.stringify(projects));
+      loadProjectsList();
+      changeProject(name);
+    }
+
+    function copyProjectKey() {
+      const key = document.getElementById('project-api-key').innerText;
+      navigator.clipboard.writeText(key);
+      alert('Clé d\'API copiée dans le presse-papier !');
+    }
+
+    function loadStoredRLS() {
+      const defaultRules = '{\n  "rules": {\n    ".read": "auth != null",\n    ".write": "auth != null && auth.token.admin === true"\n  }\n}';
+      document.getElementById('rls-rules').value = localStorage.getItem('rls_rules_config') || defaultRules;
+    }
+
+    function saveRLSRules() {
+      const val = document.getElementById('rls-rules').value;
+      try {
+        JSON.parse(val);
+        localStorage.setItem('rls_rules_config', val);
+        alert('Règles RLS enregistrées et appliquées avec succès !');
+      } catch (e) {
+        alert('Erreur : Syntaxe JSON invalide dans vos règles RLS.');
+      }
+    }
+
+    function resetDefaultRLS() {
+      if (confirm('Réinitialiser les règles par défaut ?')) {
+        localStorage.removeItem('rls_rules_config');
+        loadStoredRLS();
+      }
+    }
+
+    function testRLS() {
+      const role = document.getElementById('sim-role').value;
+      const action = document.getElementById('sim-action').value;
+      const res = document.getElementById('sim-result');
+
+      if (role === 'admin') {
+        res.className = 'sim-result-tag success';
+        res.innerText = 'ACCÈS AUTORISÉ (Plein accès Admin)';
+      } else if (role === 'authenticated' && action === 'read') {
+        res.className = 'sim-result-tag success';
+        res.innerText = 'ACCÈS AUTORISÉ (Lecture publique pour membres)';
+      } else {
+        res.className = 'sim-result-tag denied';
+        res.innerText = 'ACCÈS REFUSÉ (Privilèges insuffisants)';
+      }
+    }
+  </script>
+</body>
+</html>
