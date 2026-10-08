@@ -13,6 +13,7 @@
 </head>
 <body>
 
+  <!-- Overlay d'arrière-plan pour fermer le menu mobile en cliquant à côté -->
   <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
   <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
 
@@ -38,7 +39,7 @@
     </form>
   </div>
 
-  <!-- MENU LATÉRAL -->
+  <!-- MENU LATÉRAL (SIDEBAR) -->
   <aside id="sidebar">
     <div class="sidebar-header">
       <svg class="brand-logo-svg" viewBox="0 0 64 64" width="32" height="32">
@@ -135,33 +136,46 @@
     </div>
   </main>
 
+  <!-- SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="base-config.js"></script>
   <script>
+    // Chargement dynamique des modules et fermeture automatique du menu latéral
     function loadModule(fileUrl, title, element) {
       document.getElementById('main-frame').src = fileUrl;
       document.getElementById('page-title').innerText = title;
 
+      // Gestion de la classe active sur les éléments du menu
       document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
       if (element) {
         element.classList.add('active');
       }
 
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
-      if (sidebar.classList.contains('open')) {
-        sidebar.classList.remove('open');
-        overlay.classList.remove('active');
-      }
+      // Fermeture automatique du menu latéral pour un affichage pleine page
+      closeSidebarOnMobile();
     }
 
+    // Basculement de la visibilité du menu
     function toggleMenu() {
       const sidebar = document.getElementById('sidebar');
       const overlay = document.getElementById('sidebar-overlay');
       sidebar.classList.toggle('open');
-      overlay.classList.toggle('active');
+      if (overlay) overlay.classList.toggle('active');
     }
 
+    // Fermeture forcée du menu latéral
+    function closeSidebarOnMobile() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      if (sidebar && sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+      }
+      if (overlay && overlay.classList.contains('active')) {
+        overlay.classList.remove('active');
+      }
+    }
+
+    // Filtrage dynamique du menu par recherche
     function filterMenus() {
       const query = document.getElementById('menu-search-input').value.toLowerCase();
       const items = document.querySelectorAll('.nav-item');
@@ -171,6 +185,7 @@
       });
     }
 
+    // Modales
     function openModal() {
       document.getElementById('create-project-modal').style.display = 'block';
       document.getElementById('modal-overlay').style.display = 'block';
@@ -200,6 +215,7 @@
       }
     }
 
+    // Gestion du thème Sombre / Clair
     function toggleTheme() {
       const currentTheme = document.documentElement.getAttribute('data-theme');
       const newTheme = currentTheme === 'light' ? 'dark' : 'light';
@@ -211,6 +227,7 @@
       document.getElementById('theme-text').innerText = newTheme === 'light' ? 'Mode Sombre' : 'Mode Clair';
     }
 
+    // Initialisation
     document.addEventListener('DOMContentLoaded', () => {
       const activeProject = localStorage.getItem('active_project') || 'Dakpro-Main';
       document.getElementById('current-project-label').innerText = activeProject;
