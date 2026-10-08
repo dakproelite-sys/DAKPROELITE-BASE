@@ -3,242 +3,2104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>DAKPROELITE BASE - Console Administration</title>
-  
+
   <!-- Icônes Google Material -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
 
-  <!-- Feuille de style externe -->
+  <!-- Feuille de style existante -->
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-  <!-- Overlay d'arrière-plan pour fermer le menu mobile en cliquant à côté -->
-  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMenu()"></div>
-  <div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+  <!-- =========================================================
+       OVERLAYS
+       ========================================================= -->
 
-  <!-- MODALE CRÉATION DE PROJET -->
-  <div class="modal" id="create-project-modal">
-    <div class="modal-header">Nouveau Projet / Application</div>
-    <form onsubmit="handleCreateProject(event)">
-      <div class="form-group">
-        <label>Nom de l'application / projet :</label>
-        <input type="text" id="new-app-name" placeholder="Ex: Dakpro-Pay" required>
-      </div>
-      <div class="form-group-lg">
-        <label>Environnement :</label>
-        <select id="new-app-env">
-          <option value="Production">Production</option>
-          <option value="Staging">Staging / Test</option>
-        </select>
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="btn-secondary" onclick="closeModal()">Annuler</button>
-        <button type="submit" class="btn-primary">Créer & Générer Clé</button>
-      </div>
-    </form>
+  <div
+    class="sidebar-overlay"
+    id="sidebar-overlay"
+    onclick="closeMainMenu()">
   </div>
 
-  <!-- MENU LATÉRAL (SIDEBAR) -->
-  <aside id="sidebar">
-    <div class="sidebar-header">
-      <svg class="brand-logo-svg" viewBox="0 0 64 64" width="32" height="32">
-        <path d="M32 8 C16 8 8 13 8 18 C8 23 16 28 32 28 C48 28 56 23 56 18 C56 13 48 8 32 8 Z" fill="none" stroke="#f59e0b" stroke-width="2"/>
-        <path d="M8 18 V32 C8 37 16 42 32 42 C48 42 56 37 56 32 V18" stroke="#f59e0b" stroke-width="2" fill="none"/>
-        <path d="M8 32 V46 C8 51 16 56 32 56 C48 56 56 51 56 46 V32" stroke="#f59e0b" stroke-width="2" fill="none"/>
-        <circle cx="46" cy="32" r="3" fill="#f59e0b"/>
-      </svg>
-      <div class="brand-title">DAKPROELITE <span>BASE</span></div>
+  <div
+    class="modal-overlay"
+    id="modal-overlay"
+    onclick="closeModal()">
+  </div>
+
+
+  <!-- =========================================================
+       MODALE CRÉATION DE PROJET
+       ========================================================= -->
+
+  <div class="modal" id="create-project-modal">
+
+    <div class="modal-header">
+      Nouveau Projet / Application
     </div>
+
+    <form onsubmit="handleCreateProject(event)">
+
+      <div class="form-group">
+
+        <label>
+          Nom de l'application / projet :
+        </label>
+
+        <input
+          type="text"
+          id="new-app-name"
+          placeholder="Ex: Dakpro-Pay"
+          required>
+
+      </div>
+
+
+      <div class="form-group-lg">
+
+        <label>
+          Environnement :
+        </label>
+
+        <select id="new-app-env">
+
+          <option value="Production">
+            Production
+          </option>
+
+          <option value="Staging">
+            Staging / Test
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          onclick="closeModal()">
+          Annuler
+        </button>
+
+        <button
+          type="submit"
+          class="btn-primary">
+          Créer & Générer Clé
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+
+  <!-- =========================================================
+       MENU LATÉRAL PRINCIPAL
+       ========================================================= -->
+
+  <aside
+    id="sidebar"
+    hidden>
+
+    <!-- EN-TÊTE DU MENU -->
+
+    <div class="sidebar-header">
+
+      <svg
+        class="brand-logo-svg"
+        viewBox="0 0 64 64"
+        width="32"
+        height="32">
+
+        <path
+          d="M32 8 C16 8 8 13 8 18 C8 23 16 28 32 28 C48 28 56 23 56 18 C56 13 48 8 32 8 Z"
+          fill="none"
+          stroke="#f59e0b"
+          stroke-width="2"/>
+
+        <path
+          d="M8 18 V32 C8 37 16 42 32 42 C48 42 56 37 56 32 V18"
+          stroke="#f59e0b"
+          stroke-width="2"
+          fill="none"/>
+
+        <path
+          d="M8 32 V46 C8 51 16 56 32 56 C48 56 56 51 56 46 V32"
+          stroke="#f59e0b"
+          stroke-width="2"
+          fill="none"/>
+
+        <circle
+          cx="46"
+          cy="32"
+          r="3"
+          fill="#f59e0b"/>
+
+      </svg>
+
+
+      <div class="brand-title">
+
+        DAKPROELITE
+        <span>BASE</span>
+
+      </div>
+
+    </div>
+
+
+    <!-- RECHERCHE DU MENU -->
 
     <div class="sidebar-search">
+
       <div class="search-box">
-        <span class="material-icons-outlined">search</span>
-        <input type="text" id="menu-search-input" onkeyup="filterMenus()" placeholder="Rechercher des modules...">
+
+        <span class="material-icons-outlined">
+          search
+        </span>
+
+        <input
+          type="text"
+          id="menu-search-input"
+          onkeyup="filterMenus()"
+          placeholder="Rechercher des modules...">
+
       </div>
+
     </div>
 
-    <div class="menu-group">
-      <div class="nav-item active" onclick="loadModule('overview.html', 'Vue d\'ensemble du projet', this)">
-        <span class="material-icons-outlined">home</span> Vue d'ensemble
-      </div>
-      <div class="nav-item" onclick="loadModule('profile.html', 'Mon Profil & Quotas Mensuels', this)">
-        <span class="material-icons-outlined">account_circle</span> Mon Profil & Limites
-      </div>
-      <div class="nav-item" onclick="loadModule('security.html', 'Paramètres & Sécurité', this)">
-        <span class="material-icons-outlined">settings</span> Paramètres
-      </div>
-    </div>
+
+    <!-- =====================================================
+         MENU GÉNÉRAL
+         ===================================================== -->
 
     <div class="menu-group">
-      <div class="menu-title">Services Base & Données</div>
-      <div class="nav-item" onclick="loadModule('rtdb.html', 'Realtime Database', this)">
-        <span class="material-icons-outlined">storage</span> Realtime Database
+
+      <div
+        class="nav-item active"
+        onclick="loadModule(
+          'overview.html',
+          'Vue d\\'ensemble du projet',
+          this
+        )">
+
+        <span class="material-icons-outlined">
+          home
+        </span>
+
+        Vue d'ensemble
+
       </div>
-      <div class="nav-item" onclick="loadModule('auth.html', 'Authentication', this)">
-        <span class="material-icons-outlined">people</span> Authentication
+
+
+      <div
+        class="nav-item"
+        onclick="loadModule(
+          'profile.html',
+          'Mon Profil & Quotas Mensuels',
+          this
+        )">
+
+        <span class="material-icons-outlined">
+          account_circle
+        </span>
+
+        Mon Profil & Limites
+
       </div>
-      <div class="nav-item" onclick="loadModule('firestore.html', 'Firestore Studio', this)">
-        <span class="material-icons-outlined">local_fire_department</span> Firestore
+
+
+      <div
+        class="nav-item"
+        onclick="loadModule(
+          'security.html',
+          'Paramètres & Sécurité',
+          this
+        )">
+
+        <span class="material-icons-outlined">
+          settings
+        </span>
+
+        Paramètres
+
       </div>
-      <div class="nav-item" onclick="loadModule('storage.html', 'Storage Studio (Fichiers)', this)">
-        <span class="material-icons-outlined">folder_open</span> Cloud Storage
-      </div>
-      <div class="nav-item" onclick="loadModule('functions.html', 'Cloud Functions & Backend', this)">
-        <span class="material-icons-outlined">code</span> Cloud Functions
-      </div>
-      <div class="nav-item" onclick="loadModule('app-check.html', 'App Check & Protection API', this)">
-        <span class="material-icons-outlined">verified_user</span> App Check
-      </div>
+
     </div>
 
+
+    <!-- =====================================================
+         SERVICES BASE & DONNÉES
+         ===================================================== -->
+
     <div class="menu-group">
-      <div class="menu-title">Intelligence & ML</div>
-      <div class="nav-item" onclick="loadModule('ml.html', 'Machine Learning Console', this)">
-        <span class="material-icons-outlined">psychology</span> Machine Learning
+
+      <div class="menu-title">
+        Services Base & Données
       </div>
-      <div class="nav-item" onclick="loadModule('ai.html', 'AI Logic & Intégrations', this)">
-        <span class="material-icons-outlined">auto_awesome</span> AI Logic
+
+
+      <div
+        class="nav-item"
+        onclick="loadModule(
+          'rtdb.html',
+          'Realtime Database',
+          this
+        )">
+
+        <span class="material-icons-outlined">
+          storage
+        </span>
+
+        Realtime Database
+
       </div>
+
+
+      <div
+        class="nav-item"
+        onclick="loadModule(
+          'auth.html',
+          'Authentication',
+          this
+        )">
+
+        <span class="material-icons-outlined">
+          people
+        </span>
+
+        Authentication
+
+      </div>
+
+
+      <div
+        class="nav-item"
+        onclick="loadModule(
+          'firestore.html',
+          'Firestore Studio',
+          this
+        )">
+
+        <span class="material-icons-outlined">
+          local_fire_department
+        </span>
+
+        Firestore
+
+      </div>
+
+
+      <div
+        class="nav-item"
+        onclick="loadModule(
+          'storage.html',
+          'Storage Studio (Fichiers)',
+          this
+        )">
+
+        <span class="material-icons-outlined">
+          folder_open
+        </span>
+
+        Cloud Storage
+
+      </div>
+
+
+      <div
+        class="nav-item"
+        onclick="loadModule(
+          'functions.html',
+          'Cloud Functions & Backend',
+          this
+        )">
+
+        <span class="material-icons-outlined">
+          code
+        </span>
+
+        Cloud Functions
+
+      </div>
+
+
+      <div
+        class="nav-item"
+        onclick="loadModule(
+          'app-check.html',
+          'App Check & Protection API',
+          this
+        )">
+
+        <span class="material-icons-outlined">
+          verified_user
+        </span>
+
+        App Check
+
+      </div>
+
     </div>
+
+
+    <!-- =====================================================
+         INTELLIGENCE & ML
+         ===================================================== -->
+
+    <div class="menu-group">
+
+      <div class="menu-title">
+        Intelligence & ML
+      </div>
+
+
+      <div
+        class="nav-item"
+        onclick="loadModule(
+          'ml.html',
+          'Machine Learning Console',
+          this
+        )">
+
+        <span class="material-icons-outlined">
+          psychology
+        </span>
+
+        Machine Learning
+
+      </div>
+
+
+      <div
+        class="nav-item"
+        onclick="loadModule(
+          'ai.html',
+          'AI Logic & Intégrations',
+          this
+        )">
+
+        <span class="material-icons-outlined">
+          auto_awesome
+        </span>
+
+        AI Logic
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PIED DU MENU
+         ===================================================== -->
 
     <div class="sidebar-footer">
-      <div>Projet actif : <strong id="current-project-label">Dakpro-Main</strong></div>
-      <span class="plan-badge">SPARK (GRATUIT)</span>
+
+      <div>
+        Projet actif :
+        <strong id="current-project-label">
+          Dakpro-Main
+        </strong>
+      </div>
+
+      <span class="plan-badge">
+        SPARK (GRATUIT)
+      </span>
+
     </div>
 
-    <div class="theme-switch-wrapper">
-      <button class="theme-switch-btn" onclick="toggleTheme()">
-        <span class="material-icons-outlined" id="theme-icon">light_mode</span>
-        <span id="theme-text">Mode Clair</span>
+
+    <!-- =====================================================
+         MODE CLAIR / SOMBRE
+         MINI INTERRUPTEUR
+         ===================================================== -->
+
+    <div
+      class="theme-switch-wrapper"
+      style="
+        padding:12px 14px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+      ">
+
+      <!-- Texte du mode -->
+
+      <div
+        style="
+          display:flex;
+          align-items:center;
+          gap:9px;
+          min-width:0;
+        ">
+
+        <span
+          class="material-icons-outlined"
+          id="theme-icon"
+          style="
+            font-size:20px;
+          ">
+          dark_mode
+        </span>
+
+        <div
+          style="
+            display:flex;
+            flex-direction:column;
+            line-height:1.15;
+          ">
+
+          <span
+            style="
+              font-size:13px;
+              font-weight:600;
+            "
+            id="theme-text">
+            Mode sombre
+          </span>
+
+          <small
+            id="theme-status-text"
+            style="
+              font-size:10px;
+              opacity:.55;
+            ">
+            Activé
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <!-- MINI SWITCH -->
+
+      <button
+        type="button"
+        id="theme-toggle"
+        onclick="toggleTheme()"
+        role="switch"
+        aria-checked="true"
+        aria-label="Activer ou désactiver le mode sombre"
+        style="
+          width:46px;
+          height:25px;
+          min-width:46px;
+          padding:2px;
+          border:1px solid rgba(245,158,11,.35);
+          border-radius:20px;
+          background:#f59e0b;
+          cursor:pointer;
+          position:relative;
+          display:flex;
+          align-items:center;
+          transition:all .25s ease;
+          box-sizing:border-box;
+        ">
+
+        <span
+          id="theme-toggle-knob"
+          style="
+            width:19px;
+            height:19px;
+            border-radius:50%;
+            background:#ffffff;
+            display:block;
+            transform:translateX(20px);
+            transition:transform .25s ease;
+            box-shadow:0 2px 5px rgba(0,0,0,.35);
+          ">
+        </span>
+
       </button>
+
     </div>
+
   </aside>
 
-  <!-- CONTENU PRINCIPAL PAR IFRAME -->
-  <main>
+
+  <!-- =========================================================
+       CONTENU PRINCIPAL
+       ========================================================= -->
+
+  <main id="main-content">
+
+
+    <!-- =====================================================
+         BARRE SUPÉRIEURE
+         ===================================================== -->
+
     <header>
+
       <div class="topbar-left">
-        <button class="menu-toggle-btn" onclick="toggleMenu()" aria-label="Ouvrir le menu">
-          <span class="material-icons-outlined">menu</span>
+
+        <!-- BOUTON MENU PRINCIPAL -->
+
+        <button
+          class="menu-toggle-btn"
+          id="main-menu-button"
+          onclick="toggleMainMenu()"
+          aria-label="Ouvrir le menu principal"
+          type="button">
+
+          <span class="material-icons-outlined">
+            menu
+          </span>
+
         </button>
-        <h2 id="page-title" class="topbar-title">Vue d'ensemble du projet</h2>
+
+
+        <!-- TITRE -->
+
+        <h2
+          id="page-title"
+          class="topbar-title">
+
+          Vue d'ensemble du projet
+
+        </h2>
+
       </div>
 
-      <div class="user-profile" onclick="loadModule('profile.html', 'Mon Profil & Quotas Mensuels')" style="cursor: pointer;">
-        <span id="user-display">Développeur</span>
-        <button class="btn-logout" onclick="event.stopPropagation(); logout();">Déconnexion</button>
+
+      <!-- =====================================================
+           PROFIL / COMPTE EN HAUT À DROITE
+           ===================================================== -->
+
+      <div
+        class="user-profile"
+        id="user-profile-area"
+        style="
+          position:relative;
+          cursor:pointer;
+          display:flex;
+          align-items:center;
+          gap:8px;
+        "
+        onclick="toggleAccountMenu()">
+
+
+        <!-- AVATAR -->
+
+        <div
+          id="user-avatar"
+          style="
+            width:38px;
+            height:38px;
+            min-width:38px;
+            border-radius:50%;
+            overflow:hidden;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#1f2937;
+            border:1px solid rgba(245,158,11,.55);
+            color:#f59e0b;
+            font-weight:700;
+          ">
+
+          <span
+            class="material-icons-outlined"
+            id="user-avatar-icon">
+            account_circle
+          </span>
+
+          <img
+            id="user-avatar-image"
+            src=""
+            alt="Photo de profil"
+            style="
+              width:100%;
+              height:100%;
+              object-fit:cover;
+              display:none;
+            ">
+
+        </div>
+
+
+        <!-- INFORMATIONS COMPTE -->
+
+        <div
+          style="
+            display:flex;
+            flex-direction:column;
+            align-items:flex-start;
+            max-width:220px;
+            overflow:hidden;
+          ">
+
+          <span
+            id="user-display"
+            style="
+              font-weight:600;
+              white-space:nowrap;
+              overflow:hidden;
+              text-overflow:ellipsis;
+              max-width:220px;
+            ">
+            Développeur
+          </span>
+
+          <small
+            id="user-email-display"
+            style="
+              opacity:.65;
+              white-space:nowrap;
+              overflow:hidden;
+              text-overflow:ellipsis;
+              max-width:220px;
+            ">
+            Non connecté
+          </small>
+
+        </div>
+
+
+        <!-- FLÈCHE -->
+
+        <span
+          class="material-icons-outlined"
+          id="account-arrow">
+          expand_more
+        </span>
+
+
+        <!-- ===================================================
+             MENU DU COMPTE
+             =================================================== -->
+
+        <div
+          id="account-menu"
+          hidden
+          onclick="event.stopPropagation()"
+          style="
+            position:absolute;
+            right:0;
+            top:calc(100% + 10px);
+            width:290px;
+            max-width:calc(100vw - 20px);
+            background:#111827;
+            border:1px solid rgba(245,158,11,.35);
+            border-radius:14px;
+            padding:10px;
+            box-shadow:0 18px 45px rgba(0,0,0,.45);
+            z-index:9999;
+          ">
+
+
+          <!-- COMPTE ACTUEL -->
+
+          <div
+            style="
+              padding:12px;
+              border-bottom:1px solid rgba(255,255,255,.08);
+              margin-bottom:8px;
+            ">
+
+            <div
+              style="
+                font-size:12px;
+                opacity:.55;
+                margin-bottom:5px;
+              ">
+              COMPTE ACTUEL
+            </div>
+
+            <div
+              id="account-menu-email"
+              style="
+                font-weight:600;
+                word-break:break-all;
+              ">
+              Non connecté
+            </div>
+
+          </div>
+
+
+          <!-- MON PROFIL -->
+
+          <button
+            type="button"
+            onclick="openMyProfile()"
+            style="
+              width:100%;
+              border:0;
+              background:transparent;
+              color:inherit;
+              padding:12px;
+              text-align:left;
+              cursor:pointer;
+              border-radius:9px;
+              display:flex;
+              align-items:center;
+              gap:10px;
+            ">
+
+            <span class="material-icons-outlined">
+              account_circle
+            </span>
+
+            <span>
+              Mon profil
+            </span>
+
+          </button>
+
+
+          <!-- CHANGER DE COMPTE -->
+
+          <button
+            type="button"
+            onclick="changeAccount()"
+            style="
+              width:100%;
+              border:0;
+              background:transparent;
+              color:inherit;
+              padding:12px;
+              text-align:left;
+              cursor:pointer;
+              border-radius:9px;
+              display:flex;
+              align-items:center;
+              gap:10px;
+            ">
+
+            <span class="material-icons-outlined">
+              switch_account
+            </span>
+
+            <span>
+              Changer de compte
+            </span>
+
+          </button>
+
+
+          <!-- GOOGLE -->
+
+          <button
+            type="button"
+            onclick="signInWithGoogle()"
+            style="
+              width:100%;
+              border:0;
+              background:transparent;
+              color:inherit;
+              padding:12px;
+              text-align:left;
+              cursor:pointer;
+              border-radius:9px;
+              display:flex;
+              align-items:center;
+              gap:10px;
+            ">
+
+            <span
+              style="
+                width:24px;
+                height:24px;
+                border-radius:50%;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-weight:800;
+                background:#fff;
+                color:#4285F4;
+              ">
+              G
+            </span>
+
+            <span>
+              Continuer avec Google
+            </span>
+
+          </button>
+
+
+          <!-- SÉPARATEUR -->
+
+          <div
+            style="
+              height:1px;
+              background:rgba(255,255,255,.08);
+              margin:7px 0;
+            ">
+          </div>
+
+
+          <!-- DÉCONNEXION -->
+
+          <button
+            type="button"
+            onclick="logout()"
+            style="
+              width:100%;
+              border:0;
+              background:transparent;
+              color:#ef4444;
+              padding:12px;
+              text-align:left;
+              cursor:pointer;
+              border-radius:9px;
+              display:flex;
+              align-items:center;
+              gap:10px;
+            ">
+
+            <span class="material-icons-outlined">
+              logout
+            </span>
+
+            <span>
+              Déconnexion
+            </span>
+
+          </button>
+
+        </div>
+
       </div>
+
     </header>
 
-    <div class="content-area" style="padding: 0; height: calc(100vh - 65px); overflow: hidden;">
-      <iframe id="main-frame" src="overview.html" style="width: 100%; height: 100%; border: none;" title="Module actif"></iframe>
+
+    <!-- =====================================================
+         ZONE DE TRAVAIL
+         ===================================================== -->
+
+    <div
+      class="content-area"
+      id="content-area"
+      style="
+        padding:0;
+        height:calc(100vh - 65px);
+        overflow:hidden;
+      ">
+
+      <iframe
+        id="main-frame"
+        src="overview.html"
+        style="
+          width:100%;
+          height:100%;
+          border:none;
+        "
+        title="Module actif">
+      </iframe>
+
     </div>
+
   </main>
 
-  <!-- SCRIPTS -->
+
+  <!-- =========================================================
+       SCRIPTS
+       ========================================================= -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Configuration existante : NE PAS MODIFIER -->
   <script src="base-config.js"></script>
+
+
   <script>
-    // Chargement dynamique des modules et fermeture automatique du menu latéral
-    function loadModule(fileUrl, title, element) {
-      document.getElementById('main-frame').src = fileUrl;
-      document.getElementById('page-title').innerText = title;
 
-      // Gestion de la classe active sur les éléments du menu
-      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    /* =========================================================
+       ÉLÉMENTS PRINCIPAUX
+       ========================================================= */
+
+    const sidebar =
+      document.getElementById('sidebar');
+
+    const sidebarOverlay =
+      document.getElementById('sidebar-overlay');
+
+    const mainFrame =
+      document.getElementById('main-frame');
+
+    const pageTitle =
+      document.getElementById('page-title');
+
+    const accountMenu =
+      document.getElementById('account-menu');
+
+
+    /* =========================================================
+       MENU PRINCIPAL
+       ========================================================= */
+
+    function toggleMainMenu() {
+
+      if (sidebar.hidden) {
+
+        openMainMenu();
+
+      } else {
+
+        closeMainMenu();
+
+      }
+
+    }
+
+
+    function openMainMenu() {
+
+      sidebar.hidden = false;
+
+      sidebar.classList.add('open');
+
+      if (sidebarOverlay) {
+
+        sidebarOverlay.classList.add('active');
+
+      }
+
+    }
+
+
+    function closeMainMenu() {
+
+      sidebar.classList.remove('open');
+
+      sidebar.hidden = true;
+
+      if (sidebarOverlay) {
+
+        sidebarOverlay.classList.remove('active');
+
+      }
+
+    }
+
+
+    /* =========================================================
+       CHARGEMENT D'UN MODULE
+       ========================================================= */
+
+    function loadModule(
+      fileUrl,
+      title,
+      element
+    ) {
+
+      mainFrame.src = fileUrl;
+
+      pageTitle.innerText = title;
+
+
+      document
+        .querySelectorAll('.nav-item')
+        .forEach(function(item) {
+
+          item.classList.remove('active');
+
+        });
+
+
       if (element) {
+
         element.classList.add('active');
+
       }
 
-      // Fermeture automatique du menu latéral pour un affichage pleine page
-      closeSidebarOnMobile();
+
+      /* Le menu disparaît après sélection */
+
+      closeMainMenu();
+
     }
 
-    // Basculement de la visibilité du menu
-    function toggleMenu() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
-      sidebar.classList.toggle('open');
-      if (overlay) overlay.classList.toggle('active');
-    }
 
-    // Fermeture forcée du menu latéral
-    function closeSidebarOnMobile() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebar-overlay');
-      if (sidebar && sidebar.classList.contains('open')) {
-        sidebar.classList.remove('open');
-      }
-      if (overlay && overlay.classList.contains('active')) {
-        overlay.classList.remove('active');
-      }
-    }
+    /* =========================================================
+       RECHERCHE MENU
+       ========================================================= */
 
-    // Filtrage dynamique du menu par recherche
     function filterMenus() {
-      const query = document.getElementById('menu-search-input').value.toLowerCase();
-      const items = document.querySelectorAll('.nav-item');
-      items.forEach(item => {
-        const text = item.innerText.toLowerCase();
-        item.style.display = text.includes(query) ? 'flex' : 'none';
+
+      const input =
+        document.getElementById(
+          'menu-search-input'
+        );
+
+      const query =
+        input.value
+          .toLowerCase()
+          .trim();
+
+
+      const items =
+        document.querySelectorAll(
+          '.nav-item'
+        );
+
+
+      items.forEach(function(item) {
+
+        const text =
+          item.innerText.toLowerCase();
+
+
+        item.style.display =
+          text.includes(query)
+            ? ''
+            : 'none';
+
       });
+
     }
 
-    // Modales
-    function openModal() {
-      document.getElementById('create-project-modal').style.display = 'block';
-      document.getElementById('modal-overlay').style.display = 'block';
+
+    /* =========================================================
+       MENU DU COMPTE
+       ========================================================= */
+
+    function toggleAccountMenu() {
+
+      if (accountMenu.hidden) {
+
+        openAccountMenu();
+
+      } else {
+
+        closeAccountMenu();
+
+      }
+
     }
+
+
+    function openAccountMenu() {
+
+      accountMenu.hidden = false;
+
+      const arrow =
+        document.getElementById(
+          'account-arrow'
+        );
+
+      if (arrow) {
+
+        arrow.innerText =
+          'expand_less';
+
+      }
+
+    }
+
+
+    function closeAccountMenu() {
+
+      accountMenu.hidden = true;
+
+      const arrow =
+        document.getElementById(
+          'account-arrow'
+        );
+
+      if (arrow) {
+
+        arrow.innerText =
+          'expand_more';
+
+      }
+
+    }
+
+
+    /* =========================================================
+       FERMER MENU COMPTE EN CLIQUANT AILLEURS
+       ========================================================= */
+
+    document.addEventListener(
+      'click',
+      function(event) {
+
+        const profile =
+          document.getElementById(
+            'user-profile-area'
+          );
+
+
+        if (
+          profile &&
+          !profile.contains(event.target)
+        ) {
+
+          closeAccountMenu();
+
+        }
+
+      }
+    );
+
+
+    /* =========================================================
+       OUVRIR MON PROFIL
+       ========================================================= */
+
+    function openMyProfile() {
+
+      closeAccountMenu();
+
+      loadModule(
+        'profile.html',
+        'Mon Profil & Quotas Mensuels'
+      );
+
+    }
+
+
+    /* =========================================================
+       CLIENT SUPABASE
+       ========================================================= */
+
+    function getSupabaseClient() {
+
+      if (
+        typeof window.supabaseClient !== 'undefined'
+      ) {
+
+        return window.supabaseClient;
+
+      }
+
+
+      if (
+        typeof window.supabase !== 'undefined' &&
+        window.supabase &&
+        typeof window.supabase.auth !== 'undefined'
+      ) {
+
+        return window.supabase;
+
+      }
+
+
+      if (
+        typeof window.supabaseInstance !== 'undefined'
+      ) {
+
+        return window.supabaseInstance;
+
+      }
+
+
+      return null;
+
+    }
+
+
+    /* =========================================================
+       AFFICHER INFORMATIONS UTILISATEUR
+       ========================================================= */
+
+    function updateUserInterface(user) {
+
+      const display =
+        document.getElementById(
+          'user-display'
+        );
+
+      const emailDisplay =
+        document.getElementById(
+          'user-email-display'
+        );
+
+      const menuEmail =
+        document.getElementById(
+          'account-menu-email'
+        );
+
+      const avatarImage =
+        document.getElementById(
+          'user-avatar-image'
+        );
+
+      const avatarIcon =
+        document.getElementById(
+          'user-avatar-icon'
+        );
+
+
+      if (user) {
+
+        const email =
+          user.email ||
+          'Compte connecté';
+
+
+        const metadata =
+          user.user_metadata || {};
+
+
+        const name =
+          metadata.full_name ||
+          metadata.name ||
+          email.split('@')[0] ||
+          'Utilisateur';
+
+
+        const avatar =
+          metadata.avatar_url ||
+          metadata.picture ||
+          '';
+
+
+        display.innerText =
+          name;
+
+
+        emailDisplay.innerText =
+          email;
+
+
+        menuEmail.innerText =
+          email;
+
+
+        if (avatar) {
+
+          avatarImage.src =
+            avatar;
+
+          avatarImage.style.display =
+            'block';
+
+          avatarIcon.style.display =
+            'none';
+
+        } else {
+
+          avatarImage.style.display =
+            'none';
+
+          avatarIcon.style.display =
+            'block';
+
+        }
+
+      }
+
+      else {
+
+        display.innerText =
+          'Connexion';
+
+
+        emailDisplay.innerText =
+          'Se connecter';
+
+
+        menuEmail.innerText =
+          'Aucun compte connecté';
+
+
+        avatarImage.style.display =
+          'none';
+
+
+        avatarIcon.style.display =
+          'block';
+
+      }
+
+    }
+
+
+    /* =========================================================
+       CONNEXION GOOGLE
+       ========================================================= */
+
+    async function signInWithGoogle() {
+
+      const client =
+        getSupabaseClient();
+
+
+      if (!client) {
+
+        alert(
+          'La configuration Supabase n’est pas disponible. Vérifiez base-config.js.'
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        closeAccountMenu();
+
+
+        const result =
+          await client.auth.signInWithOAuth({
+
+            provider: 'google',
+
+            options: {
+
+              redirectTo:
+                window.location.origin +
+                window.location.pathname
+
+            }
+
+          });
+
+
+        if (result.error) {
+
+          console.error(
+            'Erreur Google :',
+            result.error
+          );
+
+
+          alert(
+            'Impossible de démarrer la connexion Google : ' +
+            result.error.message
+          );
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          'Erreur connexion Google :',
+          error
+        );
+
+
+        alert(
+          'Une erreur est survenue pendant la connexion Google.'
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       CHANGER DE COMPTE
+       ========================================================= */
+
+    async function changeAccount() {
+
+      closeAccountMenu();
+
+
+      const client =
+        getSupabaseClient();
+
+
+      if (!client) {
+
+        alert(
+          'La configuration Supabase n’est pas disponible.'
+        );
+
+        return;
+
+      }
+
+
+      try {
+
+        const result =
+          await client.auth.signOut();
+
+
+        if (result.error) {
+
+          console.error(
+            'Erreur de changement de compte :',
+            result.error
+          );
+
+
+          alert(
+            'Impossible de changer de compte : ' +
+            result.error.message
+          );
+
+          return;
+
+        }
+
+
+        updateUserInterface(null);
+
+        showLoginChoice();
+
+
+      } catch (error) {
+
+        console.error(
+          'Erreur changement de compte :',
+          error
+        );
+
+
+        alert(
+          'Une erreur est survenue lors du changement de compte.'
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       CHOIX DE CONNEXION
+       ========================================================= */
+
+    function showLoginChoice() {
+
+      const email =
+        prompt(
+          'Entrez votre adresse e-mail pour vous connecter.\n\n' +
+          'Pour utiliser Google, appuyez sur Annuler puis choisissez "Continuer avec Google".'
+        );
+
+
+      if (email === null) {
+
+        return;
+
+      }
+
+
+      if (!email.trim()) {
+
+        alert(
+          'Veuillez saisir une adresse e-mail.'
+        );
+
+        return;
+
+      }
+
+
+      signInWithEmail(
+        email.trim()
+      );
+
+    }
+
+
+    /* =========================================================
+       CONNEXION PAR E-MAIL
+       ========================================================= */
+
+    async function signInWithEmail(email) {
+
+      const client =
+        getSupabaseClient();
+
+
+      if (!client) {
+
+        alert(
+          'La configuration Supabase n’est pas disponible.'
+        );
+
+        return;
+
+      }
+
+
+      alert(
+        'Adresse sélectionnée : ' +
+        email +
+        '\n\nUtilisez votre page d’inscription / connexion pour terminer l’authentification.'
+      );
+
+    }
+
+
+    /* =========================================================
+       DÉCONNEXION
+       ========================================================= */
+
+    async function logout() {
+
+      const client =
+        getSupabaseClient();
+
+
+      if (!client) {
+
+        updateUserInterface(null);
+
+        closeAccountMenu();
+
+        return;
+
+      }
+
+
+      try {
+
+        const result =
+          await client.auth.signOut();
+
+
+        if (result.error) {
+
+          console.error(
+            'Erreur de déconnexion :',
+            result.error
+          );
+
+
+          alert(
+            'Impossible de se déconnecter : ' +
+            result.error.message
+          );
+
+          return;
+
+        }
+
+
+        updateUserInterface(null);
+
+        closeAccountMenu();
+
+
+        mainFrame.src =
+          'overview.html';
+
+
+        pageTitle.innerText =
+          "Vue d'ensemble du projet";
+
+
+      } catch (error) {
+
+        console.error(
+          'Erreur déconnexion :',
+          error
+        );
+
+
+        alert(
+          'Une erreur est survenue pendant la déconnexion.'
+        );
+
+      }
+
+    }
+
+
+    /* =========================================================
+       AUTHENTIFICATION
+       ========================================================= */
+
+    async function initializeAuthentication() {
+
+      const client =
+        getSupabaseClient();
+
+
+      if (!client) {
+
+        console.warn(
+          'Client Supabase non trouvé dans base-config.js.'
+        );
+
+        updateUserInterface(null);
+
+        return;
+
+      }
+
+
+      try {
+
+        const sessionResult =
+          await client.auth.getSession();
+
+
+        if (
+          sessionResult &&
+          sessionResult.data &&
+          sessionResult.data.session
+        ) {
+
+          updateUserInterface(
+            sessionResult.data.session.user
+          );
+
+        } else {
+
+          updateUserInterface(null);
+
+        }
+
+
+        client.auth.onAuthStateChange(
+          function(event, session) {
+
+            console.log(
+              'Auth event :',
+              event
+            );
+
+
+            if (
+              session &&
+              session.user
+            ) {
+
+              updateUserInterface(
+                session.user
+              );
+
+            } else {
+
+              updateUserInterface(null);
+
+            }
+
+          }
+        );
+
+
+      } catch (error) {
+
+        console.error(
+          'Erreur initialisation authentification :',
+          error
+        );
+
+
+        updateUserInterface(null);
+
+      }
+
+    }
+
+
+    /* =========================================================
+       MODALE
+       ========================================================= */
+
+    function openModal() {
+
+      document
+        .getElementById(
+          'create-project-modal'
+        )
+        .style.display =
+        'block';
+
+
+      document
+        .getElementById(
+          'modal-overlay'
+        )
+        .style.display =
+        'block';
+
+    }
+
 
     function closeModal() {
-      document.getElementById('create-project-modal').style.display = 'none';
-      document.getElementById('modal-overlay').style.display = 'none';
+
+      document
+        .getElementById(
+          'create-project-modal'
+        )
+        .style.display =
+        'none';
+
+
+      document
+        .getElementById(
+          'modal-overlay'
+        )
+        .style.display =
+        'none';
+
     }
 
-    function handleCreateProject(e) {
-      e.preventDefault();
-      const name = document.getElementById('new-app-name').value;
-      if (name) {
-        localStorage.setItem('active_project', name);
-        document.getElementById('current-project-label').innerText = name;
-        closeModal();
-        alert('Nouveau projet créé et activé : ' + name);
-        document.getElementById('main-frame').src = document.getElementById('main-frame').src;
+
+    /* =========================================================
+       CRÉATION DE PROJET
+       ========================================================= */
+
+    function handleCreateProject(event) {
+
+      event.preventDefault();
+
+
+      const name =
+        document
+          .getElementById(
+            'new-app-name'
+          )
+          .value
+          .trim();
+
+
+      if (!name) {
+
+        return;
+
       }
+
+
+      localStorage.setItem(
+        'active_project',
+        name
+      );
+
+
+      document
+        .getElementById(
+          'current-project-label'
+        )
+        .innerText =
+        name;
+
+
+      closeModal();
+
+
+      alert(
+        'Nouveau projet créé et activé : ' +
+        name
+      );
+
+
+      mainFrame.src =
+        mainFrame.src;
+
     }
 
-    function logout() {
-      if (confirm('Voulez-vous vraiment vous déconnecter de la console ?')) {
-        alert('Déconnexion effectuée.');
-        window.location.reload();
-      }
-    }
 
-    // Gestion du thème Sombre / Clair
+    /* =========================================================
+       NOUVEAU SYSTÈME MODE CLAIR / MODE SOMBRE
+       
+       MINI INTERRUPTEUR PROFESSIONNEL
+       ========================================================= */
+
     function toggleTheme() {
-      const currentTheme = document.documentElement.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('dakpro_theme', newTheme);
-      
-      document.getElementById('theme-icon').innerText = newTheme === 'light' ? 'dark_mode' : 'light_mode';
-      document.getElementById('theme-text').innerText = newTheme === 'light' ? 'Mode Sombre' : 'Mode Clair';
+
+      const currentTheme =
+        document.documentElement
+          .getAttribute('data-theme');
+
+
+      /*
+       * Si le mode actuel est clair,
+       * on passe en sombre.
+       *
+       * Sinon on passe en clair.
+       */
+
+      const newTheme =
+        currentTheme === 'light'
+          ? 'dark'
+          : 'light';
+
+
+      applyTheme(
+        newTheme
+      );
+
     }
 
-    // Initialisation
-    document.addEventListener('DOMContentLoaded', () => {
-      const activeProject = localStorage.getItem('active_project') || 'Dakpro-Main';
-      document.getElementById('current-project-label').innerText = activeProject;
 
-      const savedTheme = localStorage.getItem('dakpro_theme') || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
-      if(document.getElementById('theme-icon')) {
-        document.getElementById('theme-icon').innerText = savedTheme === 'light' ? 'dark_mode' : 'light_mode';
-        document.getElementById('theme-text').innerText = savedTheme === 'light' ? 'Mode Sombre' : 'Mode Clair';
+    /* =========================================================
+       APPLIQUER LE THÈME
+       ========================================================= */
+
+    function applyTheme(theme) {
+
+      /*
+       * Sécurité :
+       * seules les deux valeurs autorisées
+       * sont utilisées.
+       */
+
+      if (
+        theme !== 'light' &&
+        theme !== 'dark'
+      ) {
+
+        theme = 'dark';
+
       }
-    });
+
+
+      document.documentElement
+        .setAttribute(
+          'data-theme',
+          theme
+        );
+
+
+      localStorage.setItem(
+        'dakpro_theme',
+        theme
+      );
+
+
+      const icon =
+        document.getElementById(
+          'theme-icon'
+        );
+
+
+      const text =
+        document.getElementById(
+          'theme-text'
+        );
+
+
+      const status =
+        document.getElementById(
+          'theme-status-text'
+        );
+
+
+      const toggle =
+        document.getElementById(
+          'theme-toggle'
+        );
+
+
+      const knob =
+        document.getElementById(
+          'theme-toggle-knob'
+        );
+
+
+      /*
+       * MODE SOMBRE
+       */
+
+      if (theme === 'dark') {
+
+        if (icon) {
+
+          icon.innerText =
+            'dark_mode';
+
+        }
+
+
+        if (text) {
+
+          text.innerText =
+            'Mode sombre';
+
+        }
+
+
+        if (status) {
+
+          status.innerText =
+            'Activé';
+
+        }
+
+
+        if (toggle) {
+
+          toggle.style.background =
+            '#f59e0b';
+
+          toggle.style.borderColor =
+            'rgba(245,158,11,.65)';
+
+          toggle.setAttribute(
+            'aria-checked',
+            'true'
+          );
+
+        }
+
+
+        if (knob) {
+
+          knob.style.transform =
+            'translateX(20px)';
+
+        }
+
+      }
+
+
+      /*
+       * MODE CLAIR
+       */
+
+      else {
+
+        if (icon) {
+
+          icon.innerText =
+            'light_mode';
+
+        }
+
+
+        if (text) {
+
+          text.innerText =
+            'Mode clair';
+
+        }
+
+
+        if (status) {
+
+          status.innerText =
+            'Désactivé';
+
+        }
+
+
+        if (toggle) {
+
+          toggle.style.background =
+            '#374151';
+
+          toggle.style.borderColor =
+            'rgba(255,255,255,.20)';
+
+          toggle.setAttribute(
+            'aria-checked',
+            'false'
+          );
+
+        }
+
+
+        if (knob) {
+
+          knob.style.transform =
+            'translateX(0px)';
+
+        }
+
+      }
+
+    }
+
+
+    /* =========================================================
+       INITIALISATION GÉNÉRALE
+       ========================================================= */
+
+    document.addEventListener(
+      'DOMContentLoaded',
+      function() {
+
+        /* -----------------------------------------
+           PROJET ACTIF
+           ----------------------------------------- */
+
+        const activeProject =
+          localStorage.getItem(
+            'active_project'
+          ) ||
+          'Dakpro-Main';
+
+
+        const projectLabel =
+          document.getElementById(
+            'current-project-label'
+          );
+
+
+        if (projectLabel) {
+
+          projectLabel.innerText =
+            activeProject;
+
+        }
+
+
+        /* -----------------------------------------
+           THÈME
+           ----------------------------------------- */
+
+        const savedTheme =
+          localStorage.getItem(
+            'dakpro_theme'
+          ) ||
+          'dark';
+
+
+        applyTheme(
+          savedTheme
+        );
+
+
+        /* -----------------------------------------
+           MENU PRINCIPAL FERMÉ
+           ----------------------------------------- */
+
+        closeMainMenu();
+
+
+        /* -----------------------------------------
+           MENU COMPTE FERMÉ
+           ----------------------------------------- */
+
+        closeAccountMenu();
+
+
+        /* -----------------------------------------
+           AUTHENTIFICATION
+           ----------------------------------------- */
+
+        initializeAuthentication();
+
+      }
+    );
+
+
+    /* =========================================================
+       TOUCHE ESCAPE
+       ========================================================= */
+
+    document.addEventListener(
+      'keydown',
+      function(event) {
+
+        if (
+          event.key === 'Escape'
+        ) {
+
+          closeMainMenu();
+
+          closeAccountMenu();
+
+        }
+
+      }
+    );
+
   </script>
 
 </body>
